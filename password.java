@@ -6,6 +6,7 @@ import java.lang.*;
 
 
 public class password {
+    public int cost;
     public String name;
     private String pass;  
     public user(String n, String p) throws passworderror, usererror{
@@ -13,7 +14,7 @@ public class password {
         char c;
         for(int i = 0; i<n.length(); i++){
             c = n.charAt(i);
-            if(n.length() < 5 || !(c == '_' || Character.isLetter(c) || Character.isDigit(c))){
+            if(n.length() < 5 || !(c == '_' || Character.isLetter(c) || Character.isDigrit(c))){
                 f = 0;
                 break;
             }
