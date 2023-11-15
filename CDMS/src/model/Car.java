@@ -3,7 +3,7 @@ package model;
 
 public class Car {
     private String make;
-    private String model;
+    private String type;
     private double price;
     private int year;
 
@@ -14,9 +14,9 @@ public class Car {
     }
 
     // Parameterized constructor
-    public Car(String make, String model, double price, int year) {
+    public Car(String make, String type, double price, int year) {
         this.make = make;
-        this.model = model;
+        this.type = type;
         this.price = price;
         this.year = year;
     }
@@ -30,13 +30,13 @@ public class Car {
         this.make = make;
     }
 
-    // Getters and setters for model
-    public String getModel() {
-        return model;
+    // Getters and setters for type
+    public String gettype() {
+        return type;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public void settype(String type) {
+        this.type = type;
     }
 
     // Getters and setters for price
@@ -68,11 +68,11 @@ public class Car {
             return false;
         }
         Car otherCar = (Car) obj;
-        return make.equals(otherCar.make) && model.equals(otherCar.model) && year == otherCar.year;
+        return make.equals(otherCar.make) && type.equals(otherCar.type) && year == otherCar.year;
     }
 
     @Override
     public String toString() {
-        return year + " " + make + " " + model;
+        return year + " " + make + " " + type;
     }
 }
