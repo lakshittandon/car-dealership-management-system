@@ -2,6 +2,8 @@
 package ui;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -14,8 +16,10 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 
@@ -80,9 +84,10 @@ public class CarDealershipUI extends Application {
         loginMessage = new Text();
         loginMessage.setFill(Color.GREEN);
     
-        VBox layout = new VBox(10);
+        FlowPane layout = new FlowPane(10, 10);
         layout.getChildren().addAll(titleLabel, usernameField, passwordField, loginCustomerButton, loginAdminButton, signUpButton, loginMessage);
-    
+        layout.setAlignment(Pos.CENTER);
+        
         Scene scene1 = new Scene(layout, 500, 300);
         primaryStage.setScene(scene1);
     }
@@ -129,17 +134,15 @@ public class CarDealershipUI extends Application {
 
     private void showCarsScreen(Stage primaryStage) {
         primaryStage.setTitle("Select Car");
-
+    
         Label titleLabel = new Label("SELECT CAR");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
         titleLabel.setAlignment(Pos.CENTER);
-
-        // Dropdown list for car make
+    
         ComboBox<String> makeComboBox = new ComboBox<>();
         makeComboBox.setPromptText("Select Make");
-        makeComboBox.getItems().addAll("All","Toyota", "Ford", "Honda", "Chevrolet", "BMW");
-
-        // Radio buttons for car type
+        makeComboBox.getItems().addAll("All", "Toyota", "Ford", "Honda", "Chevrolet", "BMW");
+    
         ToggleGroup typeToggleGroup = new ToggleGroup();
         RadioButton sedanRadioButton = new RadioButton("Sedan");
         sedanRadioButton.setToggleGroup(typeToggleGroup);
@@ -147,20 +150,48 @@ public class CarDealershipUI extends Application {
         hatchbackRadioButton.setToggleGroup(typeToggleGroup);
         RadioButton suvRadioButton = new RadioButton("SUV");
         suvRadioButton.setToggleGroup(typeToggleGroup);
-
-        // Additional controls as needed
-
+    
         Button searchButton = new Button("Search");
-        searchButton.setOnAction(e -> handleCarSearch(primaryStage, makeComboBox.getValue(), getTypeSelection(typeToggleGroup)));
-
+        searchButton.setOnAction(e -> handleCarSearch(primaryStage, makeComboBox, typeToggleGroup));
+    
         VBox carsLayout = new VBox(10);
         carsLayout.getChildren().addAll(titleLabel, makeComboBox, sedanRadioButton, hatchbackRadioButton, suvRadioButton, searchButton);
         carsLayout.setAlignment(Pos.CENTER);
-
+    
         Scene scene3 = new Scene(carsLayout, 500, 300);
         primaryStage.setScene(scene3);
     }
-
+    
+    private void handleCarSearch(Stage primaryStage, ComboBox<String> makeComboBox, ToggleGroup typeToggleGroup) {
+        String makeFilter = makeComboBox.getValue();
+        String typeFilter = getTypeSelection(typeToggleGroup);
+    
+        Car[] filteredCars = carInventory.getFilteredCars(makeFilter, typeFilter);
+    
+        displayFilteredCars(primaryStage, filteredCars, makeFilter, typeFilter);
+    }
+    
+    private void displayFilteredCars(Stage primaryStage, Car[] filteredCars, String selectedMake, String selectedType) {
+        Text[] carTextArray = new Text[filteredCars.length];
+    
+        for (int i = 0; i < filteredCars.length; i++) {
+            carTextArray[i] = new Text(filteredCars[i].getMake() + " " + filteredCars[i].getType() + " " + filteredCars[i].getYear());
+        }
+    
+        Button backButton = new Button("Back to Search");
+        backButton.setOnAction(e -> showCarsScreen(primaryStage));
+    
+        VBox layout = new VBox(10);
+        layout.getChildren().add(new Label("Search Results:"));
+        layout.getChildren().addAll(carTextArray);
+        layout.getChildren().add(backButton);
+        layout.setPadding(new Insets(10));
+    
+        Scene scene4 = new Scene(layout, 500, 300);
+        primaryStage.setScene(scene4);
+    }
+    
+    
 
     private void handleLogin(String userType, Stage primaryStage, String username, String password) {
         // Use userType to distinguish between customer and admin logins
@@ -178,6 +209,7 @@ public class CarDealershipUI extends Application {
                 showCarsScreen(primaryStage);
             } else {
                 loginMessage.setText("Login failed. Please check your username and password.");
+                loginMessage.setFill(Color.RED);
             }
         }
     }
@@ -207,10 +239,12 @@ public class CarDealershipUI extends Application {
         
         if(CustomerDatabase.usernameExists(username)) {
             signUpMessage.setText("Sign Up failed. Username already exists.");
+            signUpMessage.setFill(Color.RED);
         }
         else{
             CustomerDatabase.addCustomer(customer);// Add customer to the database
             signUpMessage.setText("Sign Up successful. You can go back to login.");
+            signUpMessage.setFill(Color.GREEN);
         }
 
         // Print the list of customers for verification (you can remove this in production)
@@ -225,21 +259,17 @@ public class CarDealershipUI extends Application {
     }
 
     private void handleCarSearch(Stage primaryStage, String make, String type) {
-        // Implement logic for searching cars based on the selected criteria (make, type, etc.)
-        // For now, let's assume you have a method in CarInventory to search for cars
         Car[] matchingCars = carInventory.searchCars(make, type);
     
-        // Display the search results (you can customize this based on your UI design)
         if (matchingCars.length > 0) {
             System.out.println("Search Results:");
             for (Car car : matchingCars) {
-                System.out.println(car.getMake() + " " + car.gettype() + " - $" + car.getPrice() + " - Year " + car.getYear());
+                System.out.println(car.getMake() + " " + car.getType() + " - $" + car.getPrice() + " - Year " + car.getYear());
             }
         } else {
             System.out.println("No matching cars found.");
         }
     
-        // Navigate back to the login screen or another screen after handling car search
         showLoginScreen(primaryStage);
     }
 

@@ -31,7 +31,7 @@ public class Car {
     }
 
     // Getters and setters for type
-    public String gettype() {
+    public String getType() {
         return type;
     }
 

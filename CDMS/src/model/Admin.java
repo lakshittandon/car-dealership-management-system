@@ -21,12 +21,12 @@ public class Admin {
     // Admin-specific functionalities
     public void addCarToInventory(CarInventory carInventory, Car car) {
         carInventory.addCar(car);
-        System.out.println("Admin added a car to inventory: " + car.getMake() + " " + car.gettype());
+        System.out.println("Admin added a car to inventory: " + car.getMake() + " " + car.getType());
     }
 
     public void editCarPrice(Car car, double newPrice) {
         car.setPrice(newPrice);
-        System.out.println("Admin edited the price of car: " + car.getMake() + " " + car.gettype() +
+        System.out.println("Admin edited the price of car: " + car.getMake() + " " + car.getType() +
                 " to " + newPrice);
     }
 }

@@ -18,7 +18,7 @@ public class CarInventory {
     public void addCar(Car car) {
         if (carCount < cars.length) {
             cars[carCount++] = car;
-            System.out.println("Car added to inventory: " + car.getMake() + " " + car.gettype());
+            System.out.println("Car added to inventory: " + car.getMake() + " " + car.getType());
         } else {
             System.out.println("Car inventory is full. Cannot add more cars.");
         }
@@ -33,7 +33,7 @@ public class CarInventory {
             }
             cars[carCount - 1] = null;
             carCount--;
-            System.out.println("Car removed from inventory: " + car.getMake() + " " + car.gettype());
+            System.out.println("Car removed from inventory: " + car.getMake() + " " + car.getType());
         } else {
             System.out.println("Car not found in the inventory.");
         }
@@ -46,7 +46,7 @@ public class CarInventory {
         } else {
             System.out.println("Cars in the inventory:");
             for (int i = 0; i < carCount; i++) {
-                System.out.println((i + 1) + ". " + cars[i].getMake() + " " + cars[i].gettype());
+                System.out.println((i + 1) + ". " + cars[i].getMake() + " " + cars[i].getType());
             }
         }
     }
@@ -75,15 +75,27 @@ public class CarInventory {
 
     public Car[] searchCars(String make, String type) {
         List<Car> matchingCars = new ArrayList<>();
-
+    
         for (Car car : cars) {
-            if (car.getMake().equals(make) && car.gettype().equals(type)) {
-                matchingCars.add(car);
+            if(car!=null){
+                boolean makeMatch = make.isEmpty() || car.getMake().equalsIgnoreCase(make);
+                boolean typeMatch = type.isEmpty() || car.getType().equalsIgnoreCase(type);
+        
+                if (makeMatch && typeMatch) {
+                    matchingCars.add(car);
+                }
             }
         }
-
+    
         return matchingCars.toArray(new Car[0]);
     }
+    
+    // Add a method to get filtered cars based on selected criteria
+    public Car[] getFilteredCars(String make, String type) {
+        Car[] allCars = getCars();
+        return searchCars(make, type);
+    }
+    
 
 
 
